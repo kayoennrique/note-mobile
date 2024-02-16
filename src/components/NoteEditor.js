@@ -1,36 +1,53 @@
-import React, { useState } from "react"
-import { Modal, View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView } from "react-native"
+import AsyncStorage from "@react-native-async-storage/async-storage"
+import React, { useState } from "react";
+import { Modal, View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView } from "react-native";
 
 export default function NoteEditor() {
 
-  const [text, setText] = useState("")
-  const [modalVisible, setModalVisible] = useState(false)
+  const [text, setText] = useState("");
+  const [modalVisible, setModalVisible] = useState(false);
 
-  return(
+  async function noteSave() {
+    const oneNote = {
+      id: "1",
+      text: text,
+    }
+    await AsyncStorage.setItem(oneNote.id, oneNote.text)
+    showsNote()
+  }
+
+  async function showsNote() {
+    console.log(await AsyncStorage.getItem("1"))
+  }
+
+  return (
     <>
       <Modal
         animationType="slide"
         transparent={true}
         visible={modalVisible}
-        onRequestClose={() => {setModalVisible(false)}}
+        onRequestClose={() => { setModalVisible(false) }}
       >
         <View style={styles.centerModal}>
           <ScrollView showsVerticalScrollIndicator={false}>
             <View style={styles.modal}>
               <Text style={styles.modalTitle}>Criar nota</Text>
               <Text style={styles.modalSubTitle}>Conteúdo da nota</Text>
-              <TextInput 
+              <TextInput
                 style={styles.modalInput}
                 multiline={true}
                 numberOfLines={3}
                 onChangeText={newText => setText(newText)}
                 placeholder="Digite aqui seu lembrete"
-                value={text}/>
+                value={text} />
               <View style={styles.modalButtons}>
-                <TouchableOpacity style={styles.modalSaveButton}>
+                <TouchableOpacity
+                  style={styles.modalSaveButton}
+                  onPress={() => { noteSave() }}
+                >
                   <Text style={styles.modalButtonText}>Salvar</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.modalButtonCancel} onPress={() => {setModalVisible(false)}}>
+                <TouchableOpacity style={styles.modalButtonCancel} onPress={() => { setModalVisible(false) }}>
                   <Text style={styles.modalButtonText}>Cancelar</Text>
                 </TouchableOpacity>
               </View>
@@ -38,7 +55,7 @@ export default function NoteEditor() {
           </ScrollView>
         </View>
       </Modal>
-      <TouchableOpacity onPress={() => {setModalVisible(true)}} style={styles.addMemo}>
+      <TouchableOpacity onPress={() => { setModalVisible(true) }} style={styles.addMemo}>
         <Text style={styles.addMemoText}>+</Text>
       </TouchableOpacity>
     </>
