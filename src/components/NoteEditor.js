@@ -2,7 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useState } from "react";
 import { Modal, View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView } from "react-native";
 
-export default function NoteEditor() {
+export default function NoteEditor({ showsNote }) {
 
   const [text, setText] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
