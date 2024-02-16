@@ -1,13 +1,13 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 
-export function Note() {
+export function Note({ item }) {
   const categories = { Pessoal: "#FF924F", Outros: "#00911F", Trabalho: "#2F71EB" }
   const style = styleFunction(categories["Pessoal"])
 
   return (
     <View style={style.card}>
-      <Text style={style.text} numberOfLines={5}>Lorem ipsum</Text>
+      <Text style={style.text} numberOfLines={5}>{item[1]}</Text>
     </View>
   )
 }
@@ -36,7 +36,7 @@ const styleFunction = (color) => StyleSheet.create({
     fontWeight: "700",
     marginBottom: 4,
   },
-  categories: {
+  categorie: {
     borderRadius: 4,
     backgroundColor: color,
     padding: 4,

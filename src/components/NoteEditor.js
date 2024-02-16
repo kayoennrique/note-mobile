@@ -1,34 +1,30 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useState } from "react";
 import { Modal, View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function NoteEditor({ showsNote }) {
 
-  const [text, setText] = useState("");
-  const [modalVisible, setModalVisible] = useState(false);
+  const [text, setText] = useState("")
+  const [modalVisible, setModalVisible] = useState(false)
 
   async function noteSave() {
-    const newId = await generateId();
+    const newId = await generateId()
     const oneNote = {
       id: newId.toString(),
       text: text,
     }
-    console.log(oneNote);
-    await AsyncStorage.setItem(oneNote.id, oneNote.text);
-    showsNote();
+    console.log(oneNote)
+    await AsyncStorage.setItem(oneNote.id, oneNote.text)
+    showsNote()
   }
 
   async function generateId() {
-    const allKeys = await AsyncStorage.getAllKeys();
+    const allKeys = await AsyncStorage.getAllKeys()
     if (allKeys <= 0) {
-      return 1;
+      return 1
     }
-    return allKeys.length + 1;
+    return allKeys.length + 1
   }
-
-  async function showsNote() {
-  }
-
 
   return (
     <>
@@ -51,10 +47,7 @@ export default function NoteEditor({ showsNote }) {
                 placeholder="Digite aqui seu lembrete"
                 value={text} />
               <View style={styles.modalButtons}>
-                <TouchableOpacity
-                  style={styles.modalSaveButton}
-                  onPress={() => { noteSave() }}
-                >
+                <TouchableOpacity style={styles.modalSaveButton} onPress={() => { noteSave() }}>
                   <Text style={styles.modalButtonText}>Salvar</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.modalButtonCancel} onPress={() => { setModalVisible(false) }}>
@@ -130,7 +123,7 @@ const styles = StyleSheet.create({
     width: 80,
     alignItems: "center",
   },
-  modalButtonDelete: {
+  modalBotaoDeletar: {
     backgroundColor: "#d62a18",
     borderRadius: 5,
     padding: 8,
