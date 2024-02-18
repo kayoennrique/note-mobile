@@ -1,18 +1,20 @@
+import { Picker } from "@react-native-picker/picker";
 import React, { useState } from "react";
 import { Modal, View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView } from "react-native";
 
 export default function NoteEditor({ showsNote }) {
-
-  const [text, setText] = useState("")
-  const [modalVisible, setModalVisible] = useState(false)
+  const [title, setTitle] = useState("");
+  const [categorie, setCategorie] = useState("Pessoal");
+  const [text, setText] = useState("");
+  const [modalVisible, setModalVisible] = useState(false);
 
   async function noteSave() {
     const oneNote = {
       id: "",
       text: text,
     }
-    console.log(oneNote)
-    showsNote()
+    console.log(oneNote);
+    showsNote();
   }
 
   return (
@@ -27,6 +29,20 @@ export default function NoteEditor({ showsNote }) {
           <ScrollView showsVerticalScrollIndicator={false}>
             <View style={styles.modal}>
               <Text style={styles.modalTitle}>Criar nota</Text>
+              <Text style={styles.modalSubTitle}>Titulo da nota</Text>
+              <TextInput
+                style={styles.modalInput}
+                onChangeText={newTitle => setTitle(newTitle)}
+                placeholder="Digite um titulo"
+                value={title} />
+              <Text style={styles.modalSubTitle}>Categoria</Text>
+              <Picker
+                selectedValue={categorie}
+                onValueChange={newCategorie => setCategorie(newCategorie)}>
+                <Picker.Item label="Pessoal" value="Pessoal" />
+                <Picker.Item label="Trabalho" value="Trabalho" />
+                <Picker.Item label="Outros" value="Outros" />
+              </Picker>
               <Text style={styles.modalSubTitle}>Conteúdo da nota</Text>
               <TextInput
                 style={styles.modalInput}
@@ -35,6 +51,8 @@ export default function NoteEditor({ showsNote }) {
                 onChangeText={newText => setText(newText)}
                 placeholder="Digite aqui seu lembrete"
                 value={text} />
+              <View style={styles.modalPicker}>
+              </View>
               <View style={styles.modalButtons}>
                 <TouchableOpacity style={styles.modalSaveButton} onPress={() => { noteSave() }}>
                   <Text style={styles.modalButtonText}>Salvar</Text>
