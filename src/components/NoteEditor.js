@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Modal, View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function NoteEditor({ showsNote }) {
 
@@ -8,22 +7,12 @@ export default function NoteEditor({ showsNote }) {
   const [modalVisible, setModalVisible] = useState(false)
 
   async function noteSave() {
-    const newId = await generateId()
     const oneNote = {
-      id: newId.toString(),
+      id: "",
       text: text,
     }
     console.log(oneNote)
-    await AsyncStorage.setItem(oneNote.id, oneNote.text)
     showsNote()
-  }
-
-  async function generateId() {
-    const allKeys = await AsyncStorage.getAllKeys()
-    if (allKeys <= 0) {
-      return 1
-    }
-    return allKeys.length + 1
   }
 
   return (

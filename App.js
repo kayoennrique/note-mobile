@@ -1,16 +1,18 @@
 import { FlatList, SafeAreaView, StatusBar, StyleSheet } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import NoteEditor from "./src/components/NoteEditor";
 import { Note } from "./src/components/Note";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { tableCreate } from "./src/services/Notes";
 
 export default function App() {
+
+  useEffect(() => {
+    tableCreate()
+  }, [])
 
   const [notes, setNotes] = useState([]);
 
   async function showsNote() {
-    const allKeys = await AsyncStorage.getAllKeys();
-    const allNotes = await AsyncStorage.multiGet(allKeys);
     setNotes(allNotes);
     console.log(allNotes);
   }
