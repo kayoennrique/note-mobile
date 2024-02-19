@@ -2,19 +2,20 @@ import { FlatList, SafeAreaView, StatusBar, StyleSheet } from "react-native";
 import NoteEditor from "./src/components/NoteEditor";
 import { Note } from "./src/components/Note";
 import { useEffect, useState } from "react";
-import { searchNote, tableCreate } from "./src/services/Notes";
+import { searchNotes, tableCreate } from "./src/services/Notes";
 
 export default function App() {
 
   useEffect(() => {
-    tableCreate()
-    showsNote()
+    tableCreate();
+    showsNote();
   }, [])
 
+  const [selectedNote, setSelectedNote] = useState({});
   const [notes, setNotes] = useState([]);
 
   async function showsNote() {
-    const allNotes = await searchNote();
+    const allNotes = await searchNotes();
     setNotes(allNotes);
     console.log(allNotes);
   }
@@ -23,9 +24,9 @@ export default function App() {
     <SafeAreaView style={styles.container}>
       <FlatList
         data={notes}
-        renderItem={(note) => <Note {...note} />}
+        renderItem={(note) => <Note {...note} setSelectedNote={setSelectedNote} />}
         keyExtractor={note => note.id} />
-      <NoteEditor showsNote={showsNote} />
+      <NoteEditor showsNote={showsNote} selectedNote={selectedNote} setSelectedNote={setSelectedNote} />
       <StatusBar />
     </SafeAreaView>
   );

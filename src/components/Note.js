@@ -1,17 +1,17 @@
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity } from "react-native";
 
-export function Note({ item }) {
+export function Note({ item, setSelectedNote }) {
   const categories = { Pessoal: "#FF924F", Outros: "#00911F", Trabalho: "#2F71EB" }
   const styles = styleFunction(categories[item.categorie]);
 
   return (
-    <View style={styles.card}>
+    <TouchableOpacity style={styles.card} onPress={() => setSelectedNote(item)}>
       <Text style={styles.title}>{item.title}</Text>
       <Text style={styles.categorie}>{item.categorie}</Text>
       <Text style={styles.text} numberOfLines={5}>{item.text}</Text>
-    </View>
-  )
+    </TouchableOpacity>
+  );
 }
 
 const styleFunction = (color) => StyleSheet.create({
@@ -48,4 +48,4 @@ const styleFunction = (color) => StyleSheet.create({
   text: {
     lineHeight: 28,
   }
-})
+});

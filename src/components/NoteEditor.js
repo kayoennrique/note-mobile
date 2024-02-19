@@ -1,23 +1,67 @@
 import { Picker } from "@react-native-picker/picker";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Modal, View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView } from "react-native";
-import { addNote } from "../services/Notes";
+import { addNote, updateNote, removeNote } from "../services/Notes";
 
-export default function NoteEditor({ showsNote }) {
+export default function NoteEditor({ showsNote, selectedNote, setSelectedNote }) {
+
+  useEffect(() => {
+    if (selectedNote.id) {
+      fillModal();
+      setNoteToUpdate(true);
+      setModalVisible(true);
+      return;
+    }
+    setNoteToUpdate(false);
+  }, [selectedNote]);
 
   const [title, setTitle] = useState("");
   const [categorie, setCategorie] = useState("Pessoal");
   const [text, setText] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
+  const [noteToUpdate, setNoteToUpdate] = useState(false);
 
-  async function noteSave() {
+  async function savedNote() {
     const oneNote = {
       title: title,
       categorie: categorie,
       text: text,
     }
-    await addNote(oneNote);
+    await addNote(oneNote)
     showsNote();
+    cleanModal();
+  }
+
+  async function modifyNote() {
+    const oneNote = {
+      title: title,
+      categorie: categorie,
+      text: text,
+      id: selectedNote.id
+    }
+    await updateNote(oneNote)
+    showsNote();
+    cleanModal();
+  }
+
+  async function deleteNote() {
+    await removeNote(selectedNote)
+    showsNote();
+    cleanModal();
+  }
+
+  function fillModal() {
+    setTitle(selectedNote.title);
+    setCategorie(selectedNote.categorie);
+    setText(selectedNote.text);
+  }
+
+  function cleanModal() {
+    setTitle("");
+    setCategorie("Pessoal");
+    setText("");
+    setSelectedNote({});
+    setModalVisible(false);
   }
 
   return (
@@ -32,20 +76,22 @@ export default function NoteEditor({ showsNote }) {
           <ScrollView showsVerticalScrollIndicator={false}>
             <View style={styles.modal}>
               <Text style={styles.modalTitle}>Criar nota</Text>
-              <Text style={styles.modalSubTitle}>Titulo da nota</Text>
+              <Text style={styles.modalSubTitle}>Título da nota</Text>
               <TextInput
                 style={styles.modalInput}
                 onChangeText={newTitle => setTitle(newTitle)}
-                placeholder="Digite um titulo"
+                placeholder="Digite um título"
                 value={title} />
               <Text style={styles.modalSubTitle}>Categoria</Text>
-              <Picker
-                selectedValue={categorie}
-                onValueChange={newCategorie => setCategorie(newCategorie)}>
-                <Picker.Item label="Pessoal" value="Pessoal" />
-                <Picker.Item label="Trabalho" value="Trabalho" />
-                <Picker.Item label="Outros" value="Outros" />
-              </Picker>
+              <View style={styles.modalPicker}>
+                <Picker
+                  selectedValue={categorie}
+                  onValueChange={newCategorie => setCategorie(newCategorie)}>
+                  <Picker.Item label="Pessoal" value="Pessoal" />
+                  <Picker.Item label="Trabalho" value="Trabalho" />
+                  <Picker.Item label="Outros" value="Outros" />
+                </Picker>
+              </View>
               <Text style={styles.modalSubTitle}>Conteúdo da nota</Text>
               <TextInput
                 style={styles.modalInput}
@@ -54,13 +100,18 @@ export default function NoteEditor({ showsNote }) {
                 onChangeText={newText => setText(newText)}
                 placeholder="Digite aqui seu lembrete"
                 value={text} />
-              <View style={styles.modalPicker}>
-              </View>
               <View style={styles.modalButtons}>
-                <TouchableOpacity style={styles.modalSaveButton} onPress={() => { noteSave() }}>
+                <TouchableOpacity style={styles.modalSaveButton} onPress={() => {
+                  noteToUpdate ? modifyNote() : savedNote()
+                }}>
                   <Text style={styles.modalButtonText}>Salvar</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.modalButtonCancel} onPress={() => { setModalVisible(false) }}>
+                {noteToUpdate ?
+                  <TouchableOpacity style={styles.modalButtonDeleted} onPress={() => { deleteNote() }}>
+                    <Text style={styles.modalButtonText}>Deletar</Text>
+                  </TouchableOpacity> : <></>
+                }
+                <TouchableOpacity style={styles.modalButtonCancel} onPress={() => { cleanModal() }}>
                   <Text style={styles.modalButtonText}>Cancelar</Text>
                 </TouchableOpacity>
               </View>
@@ -133,7 +184,7 @@ const styles = StyleSheet.create({
     width: 80,
     alignItems: "center",
   },
-  modalBotaoDeletar: {
+  modalButtonDeleted: {
     backgroundColor: "#d62a18",
     borderRadius: 5,
     padding: 8,
