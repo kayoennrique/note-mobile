@@ -1,8 +1,10 @@
 import { Picker } from "@react-native-picker/picker";
 import React, { useState } from "react";
 import { Modal, View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView } from "react-native";
+import { addNote } from "../services/Notes";
 
 export default function NoteEditor({ showsNote }) {
+
   const [title, setTitle] = useState("");
   const [categorie, setCategorie] = useState("Pessoal");
   const [text, setText] = useState("");
@@ -10,10 +12,11 @@ export default function NoteEditor({ showsNote }) {
 
   async function noteSave() {
     const oneNote = {
-      id: "",
+      title: title,
+      categorie: categorie,
       text: text,
     }
-    console.log(oneNote);
+    await addNote(oneNote);
     showsNote();
   }
 

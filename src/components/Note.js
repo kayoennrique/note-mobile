@@ -3,13 +3,13 @@ import { StyleSheet, Text, View } from "react-native";
 
 export function Note({ item }) {
   const categories = { Pessoal: "#FF924F", Outros: "#00911F", Trabalho: "#2F71EB" }
-  const styles = styleFunction(categories[""]);
+  const styles = styleFunction(categories[item.categorie]);
 
   return (
     <View style={styles.card}>
-      <Text style={styles.title}></Text>
-      <Text style={styles.categorie}></Text>
-      <Text style={styles.text} numberOfLines={5}>{item[1]}</Text>
+      <Text style={styles.title}>{item.title}</Text>
+      <Text style={styles.categorie}>{item.categorie}</Text>
+      <Text style={styles.text} numberOfLines={5}>{item.text}</Text>
     </View>
   )
 }
